@@ -1,5 +1,5 @@
-//import { kv } from "@vercel/kv";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { kv } from "@vercel/kv";
+
 import { Ratelimit } from "@upstash/ratelimit";
 import { Configuration, OpenAIApi } from "openai-edge";
 //import { OpenAIStream, StreamingTextResponse } from "ai";
@@ -14,19 +14,18 @@ const config = new Configuration({
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const openai = new OpenAIApi(config);
 
-
 //TODO
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(req: Request) {
   if (
-    process.env.NODE_ENV !== 'development' && 
-    process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
-  )
-  const ip = res.headers.get("x-forwarded-for");
-  const ratelimit = new Ratelimit({
-    redis: kv, 
-    limiter: Ratelimit.slidingWindow(50, "1 d")
-  })
-
-
+    process.env.NODE_ENV !== "development" &&
+    process.env.KV_REST_API_URL &&
+    process.env.KV_REST_API_TOKEN
+  ) {
+    const ip = res.headers.get("x-forwarded-for");
+    const ratelimit = new Ratelimit({
+      redis: kv,
+      limiter: Ratelimit.slidingWindow(50, "1 d"),
+    });
+  }
 }

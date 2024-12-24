@@ -29,8 +29,8 @@ const ChatText = () => {
         <div>TEST</div>
         <div>TEST</div>
       </div>
-      <div className="mt-6 bg-red-800">
-        <Textarea />
+      <div className="mt-24 bg-red-800">
+        <Textarea className="bg-white" />
       </div>
     </div>
   );

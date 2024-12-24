@@ -14,6 +14,19 @@ const config = new Configuration({
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const openai = new OpenAIApi(config);
 
+
 //TODO
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function POST(req: Request) {}
+export async function POST(req: Request) {
+  if (
+    process.env.NODE_ENV !== 'development' && 
+    process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
+  )
+  const ip = res.headers.get("x-forwarded-for");
+  const ratelimit = new Ratelimit({
+    redis: kv, 
+    limiter: Ratelimit.slidingWindow(50, "1 d")
+  })
+
+
+}

@@ -1,5 +1,4 @@
 import { OpenAIApi, Configuration } from "openai-edge";
-import fs from "fs/promises";
 
 // THESE SHOULD BE GOTTEN FROM PROCESS.ENV but it doesnt work on my end right now.
 const OPENAI_API_KEY = "";
@@ -19,10 +18,7 @@ const openaiConfig = new Configuration({
 });
 const openai = new OpenAIApi(openaiConfig);
 
-export async function extractContentFromMDX(filePath: string): Promise<string> {
-  const mdxContent = await fs.readFile(filePath, "utf-8");
-  return mdxContent;
-}
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setKV = async (key: string, value: any) => {

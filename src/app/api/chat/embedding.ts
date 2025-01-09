@@ -1,5 +1,8 @@
 import { OpenAIApi, Configuration } from "openai-edge";
 
+import { config } from "dotenv";
+config(); // Load .env variables
+
 // THESE SHOULD BE GOTTEN FROM PROCESS.ENV but it doesnt work on my end right now.
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const KV_REST_API_URL = process.env.KV_REST_API_URL;

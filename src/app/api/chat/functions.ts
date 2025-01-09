@@ -3,6 +3,9 @@ import { kv } from "@vercel/kv";
 import { OpenAIApi, Configuration } from "openai-edge";
 import { getKV } from "./embedding";
 
+import { config } from "dotenv";
+config(); // Load .env variables
+
 const openaiConfig = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -80,7 +83,7 @@ async function search_knowledge_base(
   query: string,
   prefix: string = "knowledge:"
 ): Promise<string[]> {
-  const keys = await kv.keys(`${prefix}*`); 
+  const keys = await kv.keys(`${prefix}*`);
   const contents = await Promise.all(keys.map((key) => kv.get<string>(key)));
 
   const validContents = contents.filter(
@@ -91,7 +94,7 @@ async function search_knowledge_base(
     content.toLowerCase().includes(query.toLowerCase())
   );
 
-  return matchingDocs.slice(0, 3); 
+  return matchingDocs.slice(0, 3);
 }
 
 export { search_knowledge_base };

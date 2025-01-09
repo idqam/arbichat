@@ -1,8 +1,7 @@
 import { OpenAIApi, Configuration } from "openai-edge";
 import fs from "fs/promises";
-import path from "path";
-import fetch from "node-fetch";
 
+// THESE SHOULD BE GOTTEN FROM PROCESS.ENV but it doesnt work on my end right now.
 const OPENAI_API_KEY = "";
 const KV_REST_API_URL = "";
 const KV_REST_API_TOKEN = "";
@@ -25,80 +24,27 @@ export async function extractContentFromMDX(filePath: string): Promise<string> {
   return mdxContent;
 }
 
-export async function uploadDocuments(files: string[]) {
-  for (const filePath of files) {
-    try {
-      const fileExtension = path.extname(filePath).toLowerCase();
-      let content = "";
-
-      if (fileExtension === ".mdx") {
-        content = await extractContentFromMDX(filePath);
-      } else {
-        console.error(`Unsupported file type: ${fileExtension}`);
-        continue;
-      }
-
-      const key = path.basename(filePath, fileExtension); 
-
-      console.log(`Processing file: ${filePath}`);
-
-      const embeddingResponse = await openai.createEmbedding({
-        model: "text-embedding-ada-002",
-        input: content,
-      });
-
-      if (!embeddingResponse.ok) {
-        const errorBody = await embeddingResponse.text();
-        throw new Error(
-          `Failed to create embedding for "${key}": ${errorBody}`
-        );
-      }
-
-      const responseBody = await embeddingResponse.json();
-      const embedding = responseBody.data[0]?.embedding;
-
-      if (!embedding) {
-        throw new Error(`No embedding found for file: ${filePath}`);
-      }
-
-      const value = JSON.stringify({ content, embedding });
-      await setKV(key, value);
-
-      console.log(`Successfully processed and stored document: ${filePath}`);
-    } catch (error) {
-      console.error(`Error processing file "${filePath}":`, error);
-    }
-  }
-}
-
-export const setKV = async (key: string, value: string) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const setKV = async (key: string, value: any) => {
   const sanitizedKey = encodeURIComponent(key);
-  const sanitizedValue = encodeURIComponent(value);
 
-  const url = `${process.env.KV_REST_API_URL}/set/${sanitizedKey}/${sanitizedValue}`;
-  const token = process.env.KV_REST_API_TOKEN;
-
-  console.log("Request URL:", url);
-  console.log("Authorization Token:", token);
-
-  const response = await fetch(url, {
-    method: "GET",
+  const response = await fetch(`${KV_REST_API_URL}/set/${sanitizedKey}`, {
+    method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${KV_REST_API_TOKEN}`,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify(value),
   });
 
   if (!response.ok) {
     const errorBody = await response.text();
-    console.error("KV Store Error Response:", errorBody);
     throw new Error(
-      `Failed to set key "${sanitizedKey}": ${response.statusText}`
+      `Failed to set key "${sanitizedKey}": ${response.statusText} - ${errorBody}`
     );
   }
 
-  console.log(
-    `Successfully set key "${sanitizedKey}" with value "${sanitizedValue}".`
-  );
+  console.log(`Successfully set key "${sanitizedKey}".`);
 };
 
 export const getKV = async (key: string) => {
@@ -117,57 +63,32 @@ export const getKV = async (key: string) => {
   return data.result;
 };
 
-// async function documentEmbedder() {
-//   try {
-//     const documents = [
-//       { key: "knowledgefile_4", content: "# File 1 Content" },
-//       {
-//         key: "knowledgefile_3",
-//         content: "THIS IS THE SECOND KNOWLEDGE. A POKEMON EXISTS ",
-//       },
-//     ];
+export async function embedAndStoreChunks(
+  chunks: { id: string; content: string }[]
+) {
+  for (const chunk of chunks) {
+    try {
+      const embeddingResponse = await openai.createEmbedding({
+        model: "text-embedding-ada-002",
+        input: chunk.content,
+      });
 
-//     for (const doc of documents) {
-//       console.log(`Processing document: ${doc.key}`);
+      if (!embeddingResponse.ok) {
+        const errorText = await embeddingResponse.text();
+        throw new Error(
+          `Failed to create embedding for chunk "${chunk.id}": ${errorText}`
+        );
+      }
 
-//       const embeddingResponse = await openai.createEmbedding({
-//         model: "text-embedding-ada-002",
-//         input: doc.content,
-//       });
+      const embedding = (await embeddingResponse.json()).data[0]?.embedding;
+      if (!embedding) {
+        throw new Error(`Embedding not returned for chunk "${chunk.id}"`);
+      }
 
-//       if (!embeddingResponse.ok) {
-//         const errorBody = await embeddingResponse.text();
-//         throw new Error(
-//           `Failed to fetch embedding for "${doc.key}": ${embeddingResponse.statusText}, ${errorBody}`
-//         );
-//       }
-
-//       const responseBody = await embeddingResponse.json();
-//       console.log("Embedding API Response:", responseBody);
-
-//       if (
-//         !responseBody.data ||
-//         !Array.isArray(responseBody.data) ||
-//         responseBody.data.length === 0
-//       ) {
-//         throw new Error(
-//           `Invalid API response for document "${doc.key}": ${JSON.stringify(
-//             responseBody
-//           )}`
-//         );
-//       }
-
-//       const embedding = responseBody.data[0]?.embedding;
-//       if (!embedding) {
-//         throw new Error(`Failed to extract embedding for key: ${doc.key}`);
-//       }
-
-//       const value = JSON.stringify({ content: doc.content, embedding });
-//       await setKV(doc.key, value);
-
-//       console.log(`Embedded and saved for key: ${doc.key}`);
-//     }
-//   } catch (error) {
-//     console.error("Error in documentEmbedder:", error);
-//   }
-// }
+      const kvValue = { chunk: chunk.content, embedding };
+      await setKV(chunk.id, kvValue);
+    } catch (error) {
+      console.error(`Error processing chunk "${chunk.id}":`, error);
+    }
+  }
+}

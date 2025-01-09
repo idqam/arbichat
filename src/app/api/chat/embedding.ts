@@ -1,16 +1,12 @@
 import { OpenAIApi, Configuration } from "openai-edge";
 
-import { config } from "dotenv";
-config(); // Load .env variables
+
 
 // THESE SHOULD BE GOTTEN FROM PROCESS.ENV but it doesnt work on my end right now.
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const KV_REST_API_URL = process.env.KV_REST_API_URL;
 const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
 
-console.log("OPENAI_API_KEY:", OPENAI_API_KEY);
-console.log("KV_REST_API_URL:", KV_REST_API_URL);
-console.log("KV_REST_API_TOKEN:", KV_REST_API_TOKEN);
 
 if (!OPENAI_API_KEY || !KV_REST_API_URL || !KV_REST_API_TOKEN) {
   throw new Error("Missing required environment variables.");

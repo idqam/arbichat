@@ -3,8 +3,6 @@ import { kv } from "@vercel/kv";
 import { OpenAIApi, Configuration } from "openai-edge";
 import { getKV } from "./embedding";
 
-import { config } from "dotenv";
-config(); // Load .env variables
 
 const openaiConfig = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,

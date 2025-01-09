@@ -1,9 +1,9 @@
 import { OpenAIApi, Configuration } from "openai-edge";
 
 // THESE SHOULD BE GOTTEN FROM PROCESS.ENV but it doesnt work on my end right now.
-const OPENAI_API_KEY = "";
-const KV_REST_API_URL = "";
-const KV_REST_API_TOKEN = "";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const KV_REST_API_URL = process.env.KV_REST_API_URL;
+const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
 
 console.log("OPENAI_API_KEY:", OPENAI_API_KEY);
 console.log("KV_REST_API_URL:", KV_REST_API_URL);
@@ -17,8 +17,6 @@ const openaiConfig = new Configuration({
   apiKey: OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(openaiConfig);
-
-
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setKV = async (key: string, value: any) => {

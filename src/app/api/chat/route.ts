@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { kv } from "@vercel/kv";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Configuration, OpenAIApi } from "openai-edge";
@@ -5,8 +6,12 @@ import { functions, handleFunction } from "./functions";
 
 export const runtime = "edge";
 
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const KV_REST_API_URL = process.env.KV_REST_API_URL;
+const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
+
 const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(config);

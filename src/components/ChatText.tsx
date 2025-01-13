@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import { Textarea } from "./ui/textarea";
 
@@ -8,20 +8,21 @@ const ChatText = () => {
   const [response, setResponse] = useState("");
   const [thinking, setThinking] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setQuery(e.target.value);
-  };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setQuery(e.target.value);
+    },
+    []
+  );
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     if (!query.trim()) return;
-
     setThinking(true);
     setResponse("");
     try {
       const result = await axios.post("/api/chat", {
         messages: [{ role: "user", content: query }],
       });
-
       setResponse(result.data.response);
     } catch (error) {
       console.error("Error making POST request", error);
@@ -29,7 +30,7 @@ const ChatText = () => {
     } finally {
       setThinking(false);
     }
-  };
+  }, [query]);
 
   return (
     <>
@@ -50,16 +51,14 @@ const ChatText = () => {
           {thinking ? "Thinking..." : "Submit"}
         </button>
       </div>
-
       {thinking && (
         <div className="mt-4 p-4 rounded">
-          <p className="text-lg ml-0 font-semibold">Thinking...</p>
+          <p className="text-lg font-semibold">Thinking...</p>
         </div>
       )}
-
       {response && (
         <div className="mt-4 p-4 bg-gray-100 rounded">
-          <h2 className="text-xl ml-0 font-semibold">Response:</h2>
+          <h2 className="text-xl font-semibold">Response:</h2>
           <p>{response}</p>
         </div>
       )}

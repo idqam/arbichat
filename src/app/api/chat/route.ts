@@ -19,7 +19,7 @@ const openai = new OpenAIApi(config);
 const SYSTEM_MESSAGE = {
   role: "system",
   content:
-    "Fetch information based on the user request. If the request is unclear, ask the user for clarification. If the request is clear, fetch the information and display it to the user.",
+    "Fetch information based on the user request. If the request is unclear, ask the user for clarification. If the request is clear, fetch the information and display it to the user. ONLY provide information from the knowledge base. Do not assume you can provide information from data you were trained on. If the query is not in the knowledge base, inform the user that the information is not available and you should say that that information is not in your knowledge base.",
 };
 
 export async function POST(req: Request) {

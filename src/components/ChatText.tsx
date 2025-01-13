@@ -1,38 +1,69 @@
+"use client";
+import React, { useState } from "react";
+import axios from "axios";
 import { Textarea } from "./ui/textarea";
 
 const ChatText = () => {
-  return (
-    <div
-      id="outer-container"
-      className="max-w-3xl mx-auto my-8 p-6 mt-48  border-gray-200 rounded-lg shadow-md bg-white"
-    >
-      <div id="welcome-header" className="p-6 mb-6 border-b border-gray-300">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-4">
-          Welcome to PLACEHOLDER
-        </h1>
+  const [query, setQuery] = useState("");
+  const [response, setResponse] = useState("");
+  const [thinking, setThinking] = useState(false);
 
-        <p className="text-gray-600 mb-6">
-          This is an{" "}
-          <a href="#" className="text-blue-500 underline">
-            open-source
-          </a>{" "}
-          AI chatbot that uses{" "}
-          <a href="#" className="text-blue-500 underline">
-            OpenAI Functions
-          </a>{" "}
-          <b className="text-red-900">MORE PLACE HOLDER TEXT </b>
-        </p>
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setQuery(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (!query.trim()) return;
+
+    setThinking(true);
+    setResponse("");
+    try {
+      const result = await axios.post("/api/chat", {
+        messages: [{ role: "user", content: query }],
+      });
+
+      setResponse(result.data.response);
+    } catch (error) {
+      console.error("Error making POST request", error);
+      setResponse("An error occurred. Please try again.");
+    } finally {
+      setThinking(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="mt-20 relative">
+        <Textarea
+          className="bg-white pr-16"
+          value={query}
+          onChange={handleInputChange}
+          disabled={thinking}
+        />
+        <button
+          onClick={handleSubmit}
+          className={`absolute right-2 bottom-2 p-2 ${
+            thinking ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500"
+          } text-white rounded`}
+          disabled={thinking}
+        >
+          {thinking ? "Thinking..." : "Submit"}
+        </button>
       </div>
-      <div id="temp-more" className="bg-gray-700 space-y-4">
-        <div>TEST</div>
-        <div>TEST</div>
-        <div>TEST</div>
-        <div>TEST</div>
-      </div>
-      <div className="mt-24 bg-red-800">
-        <Textarea className="bg-white" />
-      </div>
-    </div>
+
+      {thinking && (
+        <div className="mt-4 p-4 rounded">
+          <p className="text-lg ml-0 font-semibold">Thinking...</p>
+        </div>
+      )}
+
+      {response && (
+        <div className="mt-4 p-4 bg-gray-100 rounded">
+          <h2 className="text-xl ml-0 font-semibold">Response:</h2>
+          <p>{response}</p>
+        </div>
+      )}
+    </>
   );
 };
 

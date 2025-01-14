@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { kv } from "@vercel/kv";
-import { Ratelimit } from "@upstash/ratelimit";
 import { Configuration, OpenAIApi } from "openai-edge";
 import { functions, handleFunction } from "./functions";
+import { SYSTEM_MESSAGE1 } from "@/utils/constants";
 
 export const runtime = "edge";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const KV_REST_API_URL = process.env.KV_REST_API_URL;
-const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
 
 const config = new Configuration({
   apiKey: OPENAI_API_KEY,
@@ -18,63 +15,40 @@ const openai = new OpenAIApi(config);
 
 const SYSTEM_MESSAGE = {
   role: "system",
-  content:
-    "Fetch information based on the user request. If the request is unclear, ask the user for clarification. If the request is clear, fetch the information and display it to the user. ONLY provide information from the knowledge base. Do not assume you can provide information from data you were trained on. If the query is not in the knowledge base, inform the user that the information is not available and you should say that that information is not in your knowledge base.",
+  content: SYSTEM_MESSAGE1,
 };
 
 export async function POST(req: Request) {
   try {
-    // Apply rate limiting
-    if (
-      process.env.NODE_ENV !== "development" &&
-      process.env.KV_REST_API_URL &&
-      process.env.KV_REST_API_TOKEN
-    ) {
-      const ip =
-        req.headers.get("x-forwarded-for") ||
-        req.headers.get("host") ||
-        "unknown_ip";
-      const ratelimit = new Ratelimit({
-        redis: kv,
-        limiter: Ratelimit.slidingWindow(50, "1 d"), // Limit to 50 requests per day
-      });
-
-      const { success, limit, reset, remaining } = await ratelimit.limit(
-        `chat_ratelimit_${ip}`
-      );
-
-      if (!success) {
-        return new Response("You've maxed out your daily requests.", {
-          status: 429,
-          headers: {
-            "X-RateLimit-Limit": limit.toString(),
-            "X-RateLimit-Remaining": remaining.toString(),
-            "X-RateLimit-Reset": reset.toString(),
-          },
-        });
-      }
-    }
-
     const rawBody = await req.text();
     if (!rawBody) {
       return new Response("Request body is empty", { status: 400 });
     }
 
-    let parsedBody;
-    try {
-      parsedBody = JSON.parse(rawBody);
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
-      return new Response("Invalid JSON payload", { status: 400 });
-    }
-
-    const { messages } = parsedBody;
-    if (!messages || !Array.isArray(messages)) {
-      console.error("Invalid request payload:", parsedBody);
+    const { messages } = JSON.parse(rawBody);
+    if (!Array.isArray(messages)) {
       return new Response(
         "Invalid request payload. `messages` must be an array.",
         { status: 400 }
       );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userQuery = messages.find((msg: any) => msg.role === "user")?.content;
+    if (!userQuery) {
+      return new Response("No user query found in the messages", {
+        status: 400,
+      });
+    }
+
+    const cacheKey = `response_${userQuery.toLowerCase()}`;
+    const cachedResponse = await kv.get(cacheKey);
+
+    if (cachedResponse) {
+      return new Response(JSON.stringify(cachedResponse), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     messages.unshift(SYSTEM_MESSAGE);
@@ -86,49 +60,49 @@ export async function POST(req: Request) {
       functions,
     });
 
-    if (!initialResponse.ok) {
-      const errorDetails = await initialResponse.text();
-      console.error("Error from OpenAI API (initial request):", errorDetails);
-      return new Response("Error communicating with OpenAI API", {
-        status: 500,
-      });
-    }
-
     const initialResponseJson = await initialResponse.json();
     const initialMessage = initialResponseJson?.choices?.[0]?.message;
 
     if (initialMessage?.function_call) {
       const { name, arguments: args } = initialMessage.function_call;
 
-      let retrievedChunks;
-      try {
-        retrievedChunks = await handleFunction(name, JSON.parse(args));
-      } catch (error) {
-        console.error("Error in handleFunction:", error);
-        return new Response("Error handling function call", { status: 500 });
-      }
+      const retrievedChunks = await handleFunction(name, JSON.parse(args));
+
+      const formattedChunks = Array.isArray(retrievedChunks)
+        ? retrievedChunks
+            .map(
+              ({ title, chunk }: { title: string; chunk: string }) =>
+                `Title: ${title}\nContent: ${chunk}`
+            )
+            .join("\n\n")
+        : "";
 
       const finalResponse = await openai.createChatCompletion({
         model: "gpt-4o-mini-2024-07-18",
         messages: [
           ...messages,
           initialMessage,
-          { role: "function", name, content: JSON.stringify(retrievedChunks) },
+          {
+            role: "function",
+            name,
+            content: JSON.stringify(retrievedChunks),
+          },
+          {
+            role: "assistant",
+            content: `Here is the information retrieved from the knowledge base:\n\n${formattedChunks}`,
+          },
         ],
       });
-
-      if (!finalResponse.ok) {
-        const errorDetails = await finalResponse.text();
-        console.error("Error from OpenAI API (final request):", errorDetails);
-        return new Response("Error communicating with OpenAI API", {
-          status: 500,
-        });
-      }
 
       const finalResponseData = await finalResponse.json();
       const finalMessage = finalResponseData.choices?.[0]?.message?.content;
 
-      return new Response(JSON.stringify({ response: finalMessage.trim() }), {
+      const finalResponseString = JSON.stringify({
+        response: finalMessage.trim(),
+      });
+      await kv.set(cacheKey, finalResponseString, { ex: 3600 });
+
+      return new Response(finalResponseString, {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
@@ -139,9 +113,7 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   } catch (error) {
-    console.error("Unexpected error in POST /api/chat:", error);
+    console.error("Unexpected error:", error);
     return new Response("Internal server error", { status: 500 });
   }
 }
-
-//model: "gpt-4o-mini-2024-07-18",

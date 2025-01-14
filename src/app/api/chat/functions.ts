@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { kv } from "@vercel/kv";
-import { OpenAIApi, Configuration } from "openai-edge";
-import { getKV } from "./embedding";
-
-
-const openaiConfig = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const openai = new OpenAIApi(openaiConfig);
 
 type FunctionNames = "retrieve_from_kv" | "search_knowledge_base";
 
@@ -19,13 +10,14 @@ export const functions: {
 }[] = [
   {
     name: "retrieve_from_kv",
-    description: "Retrieve a value from the KV store using a specific key.",
+    description: "Retrieve a specific chunk from the KV store using its key.",
     parameters: {
       type: "object",
       properties: {
         key: {
           type: "string",
-          description: "The key to fetch from the KV store.",
+          description:
+            "The key of the chunk to retrieve (e.g., sanitizedFileName_chunk_0).",
         },
       },
       required: ["key"],
@@ -34,65 +26,79 @@ export const functions: {
   {
     name: "search_knowledge_base",
     description:
-      "Search the knowledge base for relevant documents based on a query.",
+      "Search for relevant chunks in the knowledge base using a query.",
     parameters: {
       type: "object",
       properties: {
         query: {
           type: "string",
-          description: "The query string to search for.",
+          description: "The user's query to search for relevant chunks.",
         },
       },
       required: ["query"],
     },
   },
 ];
+
 export async function handleFunction(name: string, args: any) {
   if (name === "retrieve_from_kv") {
-    const { key } = args;
-    if (!key) throw new Error("Key is required for retrieve_from_kv");
-
-    const value = await getKV(key);
-    if (!value) throw new Error(`No data found for key: ${key}`);
-
-    return { key, value };
+    return await handleRetrieveFromKV(args);
   }
 
   if (name === "search_knowledge_base") {
-    const { query } = args;
-    if (!query) throw new Error("Query is required for search_knowledge_base");
-
-    const results = await search_knowledge_base(query);
-    return { query, results };
+    return await handleSearchKnowledgeBase(args);
   }
 
   throw new Error(`Unknown function name: ${name}`);
 }
 
-export async function retrieve_from_kv(key: string): Promise<string> {
-  const value = await getKV(key);
-  if (!value) {
-    return `No data found for key: ${key}`;
+async function handleRetrieveFromKV({ key }: { key: string }) {
+  if (!key) throw new Error("Key is required for retrieve_from_kv");
+
+  const value = await kv.get<string | null>(key);
+  if (!value) throw new Error(`No data found for key: ${key}`);
+
+  return { key, value };
+}
+
+const CACHE_TTL = 3600;
+
+async function handleSearchKnowledgeBase({ query }: { query: string }) {
+  const cacheKey = `search_${query.toLowerCase()}`;
+  const cachedResult = await kv.get(cacheKey);
+
+  if (cachedResult) {
+    return JSON.parse(cachedResult as string);
   }
-  return value;
-}
 
-async function search_knowledge_base(
-  query: string,
-  prefix: string = "knowledge:"
-): Promise<string[]> {
-  const keys = await kv.keys(`${prefix}*`);
-  const contents = await Promise.all(keys.map((key) => kv.get<string>(key)));
-
-  const validContents = contents.filter(
-    (content): content is string => content !== null
+  const keys = await kv.keys("*_chunk_*");
+  const contents = await Promise.all(
+    keys.map((key) => kv.get<string | null>(key))
   );
 
-  const matchingDocs = validContents.filter((content) =>
-    content.toLowerCase().includes(query.toLowerCase())
-  );
+  const matchingChunks = keys
+    .map((key, index) => {
+      const content = contents[index];
+      if (!content) return null;
 
-  return matchingDocs.slice(0, 3);
+      try {
+        const parsedContent = JSON.parse(content);
+        return {
+          key,
+          chunk: parsedContent.chunk,
+          title: parsedContent.title || "Untitled",
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean)
+    .filter(({ chunk }: any) =>
+      chunk.toLowerCase().includes(query.toLowerCase())
+    )
+    .slice(0, 3);
+
+  await kv.set(cacheKey, JSON.stringify(matchingChunks), { ex: CACHE_TTL });
+
+  return matchingChunks;
 }
-
-export { search_knowledge_base };

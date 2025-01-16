@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { kv } from "@vercel/kv";
 import { Configuration, OpenAIApi } from "openai-edge";
 import { functions, handleFunction } from "./functions";
@@ -17,7 +18,6 @@ const SYSTEM_MESSAGE = {
   role: "system",
   content: SYSTEM_MESSAGE1,
 };
-
 export async function POST(req: Request) {
   try {
     if (
@@ -60,21 +60,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userQuery = messages.find((msg: any) => msg.role === "user")?.content;
     if (!userQuery) {
       return new Response("No user query found in the messages", {
         status: 400,
-      });
-    }
-
-    const cacheKey = `response_${userQuery.toLowerCase()}`;
-    const cachedResponse = await kv.get(cacheKey);
-
-    if (cachedResponse) {
-      return new Response(JSON.stringify(cachedResponse), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -93,10 +82,17 @@ export async function POST(req: Request) {
     if (initialMessage?.function_call) {
       const { name, arguments: args } = initialMessage.function_call;
 
-      const retrievedChunks = await handleFunction(name, JSON.parse(args));
+      const retrievedChunks = (await handleFunction(
+        name,
+        JSON.parse(args)
+      )) as { title: string; chunk: string }[];
 
       const formattedChunks = Array.isArray(retrievedChunks)
         ? retrievedChunks
+            .filter(
+              (chunk): chunk is { title: string; chunk: string } =>
+                chunk !== null
+            )
             .map(
               ({ title, chunk }: { title: string; chunk: string }) =>
                 `Title: ${title}\nContent: ${chunk}`
@@ -124,15 +120,15 @@ export async function POST(req: Request) {
       const finalResponseData = await finalResponse.json();
       const finalMessage = finalResponseData.choices?.[0]?.message?.content;
 
-      const finalResponseString = JSON.stringify({
-        response: finalMessage.trim(),
-      });
-      await kv.set(cacheKey, finalResponseString, { ex: 3600 });
-
-      return new Response(finalResponseString, {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          response: finalMessage.trim(),
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     return new Response(

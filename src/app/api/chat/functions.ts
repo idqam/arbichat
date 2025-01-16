@@ -61,22 +61,13 @@ async function handleRetrieveFromKV({ key }: { key: string }) {
   return { key, value };
 }
 
-const CACHE_TTL = 3600;
-
 async function handleSearchKnowledgeBase({ query }: { query: string }) {
-  const cacheKey = `search_${query.toLowerCase()}`;
-  const cachedResult = await kv.get(cacheKey);
-
-  if (cachedResult) {
-    return JSON.parse(cachedResult as string);
-  }
-
   const keys = await kv.keys("*_chunk_*");
   const contents = await Promise.all(
     keys.map((key) => kv.get<string | null>(key))
   );
 
-  const matchingChunks = keys
+  return keys
     .map((key, index) => {
       const content = contents[index];
       if (!content) return null;
@@ -97,8 +88,4 @@ async function handleSearchKnowledgeBase({ query }: { query: string }) {
       chunk.toLowerCase().includes(query.toLowerCase())
     )
     .slice(0, 3);
-
-  await kv.set(cacheKey, JSON.stringify(matchingChunks), { ex: CACHE_TTL });
-
-  return matchingChunks;
 }

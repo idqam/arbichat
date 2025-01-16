@@ -2,7 +2,7 @@ import { kv } from "@vercel/kv";
 import { Configuration, OpenAIApi } from "openai-edge";
 import { functions, handleFunction } from "./functions";
 import { SYSTEM_MESSAGE1 } from "@/utils/constants";
-
+import { Ratelimit } from "@upstash/ratelimit";
 export const runtime = "edge";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -20,6 +20,33 @@ const SYSTEM_MESSAGE = {
 
 export async function POST(req: Request) {
   try {
+    if (
+      process.env.NODE_ENV !== "development" &&
+      process.env.KV_REST_API_URL &&
+      process.env.KV_REST_API_TOKEN
+    ) {
+      const ip =
+        req.headers.get("x-forwarded-for") ||
+        req.headers.get("host") ||
+        "unknown_ip";
+      const ratelimit = new Ratelimit({
+        redis: kv,
+        limiter: Ratelimit.slidingWindow(50, "1 d"), // Limit to 50 requests per day
+      });
+      const { success, limit, reset, remaining } = await ratelimit.limit(
+        `chat_ratelimit_${ip}`
+      );
+      if (!success) {
+        return new Response("You've maxed out your daily requests.", {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString(),
+          },
+        });
+      }
+    }
     const rawBody = await req.text();
     if (!rawBody) {
       return new Response("Request body is empty", { status: 400 });

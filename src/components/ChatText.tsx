@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import { FiSend } from "react-icons/fi"; // Send icon
-import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Spinner icon
+import { FiSend } from "react-icons/fi";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const ChatText = () => {
   const [query, setQuery] = useState("");
@@ -46,7 +46,6 @@ const ChatText = () => {
 
   return (
     <div className="space-y-6">
-      {/* Quick Actions Section */}
       <div className="flex flex-col space-y-4">
         {quickActions.map((action, index) => (
           <button
@@ -59,7 +58,6 @@ const ChatText = () => {
         ))}
       </div>
 
-      {/* Text Input and Submit Section */}
       <div className="flex items-center w-full gap-4">
         <textarea
           className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
@@ -78,7 +76,6 @@ const ChatText = () => {
         </div>
       </div>
 
-      {/* Loading Indicator */}
       {thinking && (
         <div className="flex items-center justify-center text-gray-600 gap-2">
           <AiOutlineLoading3Quarters className="animate-spin w-5 h-5" />
@@ -86,10 +83,11 @@ const ChatText = () => {
         </div>
       )}
 
-      {/* Response Section */}
       {response && (
         <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">Response:</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            Response:
+          </h2>
           <p className="text-sm text-gray-700">{response}</p>
         </div>
       )}

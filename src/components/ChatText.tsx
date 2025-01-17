@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import { Textarea } from "./ui/textarea";
+import { FiSend } from "react-icons/fi"; // Send icon
+import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Spinner icon
 
 const ChatText = () => {
   const [query, setQuery] = useState("");
@@ -32,37 +33,67 @@ const ChatText = () => {
     }
   }, [query]);
 
+  const quickActions = [
+    "What is Arbitrum?",
+    "How do I get started building on Arbitrum?",
+    "What is Arbitrum Orbit?",
+    "What is Arbitrum Nova?",
+  ];
+
+  const handleQuickAction = (action: string) => {
+    setQuery(action);
+  };
+
   return (
-    <>
-      <div className="mt-20 relative">
-        <Textarea
-          className="bg-white pr-16"
+    <div className="space-y-6">
+      {/* Quick Actions Section */}
+      <div className="flex flex-col space-y-4">
+        {quickActions.map((action, index) => (
+          <button
+            key={index}
+            onClick={() => handleQuickAction(action)}
+            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md text-gray-800 hover:bg-gray-200 hover:shadow-md transition"
+          >
+            {action}
+          </button>
+        ))}
+      </div>
+
+      {/* Text Input and Submit Section */}
+      <div className="flex items-center w-full gap-4">
+        <textarea
+          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+          placeholder="Type your question here..."
           value={query}
           onChange={handleInputChange}
           disabled={thinking}
         />
-        <button
+        <div
           onClick={handleSubmit}
-          className={`absolute right-2 bottom-2 p-2 ${
-            thinking ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500"
-          } text-white rounded`}
-          disabled={thinking}
+          className={`flex items-center justify-center p-3 text-white bg-blue-500 hover:bg-blue-600 rounded-full cursor-pointer ${
+            thinking ? "bg-gray-400 cursor-not-allowed" : ""
+          }`}
         >
-          {thinking ? "Thinking..." : "Submit"}
-        </button>
+          <FiSend className="w-5 h-5" />
+        </div>
       </div>
+
+      {/* Loading Indicator */}
       {thinking && (
-        <div className="mt-4 p-4 rounded">
-          <p className="text-lg font-semibold">Thinking...</p>
+        <div className="flex items-center justify-center text-gray-600 gap-2">
+          <AiOutlineLoading3Quarters className="animate-spin w-5 h-5" />
+          <span>Loading...</span>
         </div>
       )}
+
+      {/* Response Section */}
       {response && (
-        <div className="mt-4 p-4 bg-gray-100 rounded">
-          <h2 className="text-xl font-semibold">Response:</h2>
-          <p>{response}</p>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Response:</h2>
+          <p className="text-sm text-gray-700">{response}</p>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

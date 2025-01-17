@@ -2,21 +2,21 @@ import ChatText from "@/components/ChatText";
 
 export default function Home() {
   return (
-    <div
-      id="outer-container"
-      className="max-w-3xl mx-auto my-8 p-6 mt-28 border-gray-200 rounded-lg shadow-md bg-slate-100"
-    >
-      <div className="flex justify-center">
-        <div id="welcome-header" className="p-6 mb-6 border-b border-gray-300">
-          <h1 className="text-4xl font-semibold text-gray-900 mb-4 ml-0">
-            Welcome to Markdown Chatter
-          </h1>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 ml-20">
-            What can I help you with today?
-          </h2>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="max-w-lg w-full px-6 py-8 bg-white border border-gray-300 rounded-lg shadow-md space-y-8">
+        <header className="text-center space-y-4">
+          <h1 className="text-3xl font-bold text-gray-900">Welcome to Arbichat!</h1>
+          <p className="text-gray-700 text-sm">
+            This is an <a href="#" className="text-blue-600 underline">open-source</a> AI chatbot that uses{" "}
+            <a href="#" className="text-blue-600 underline">OpenAI Functions</a> to interact with{" "}
+            <a href="#" className="text-blue-600 underline">Arbitrum</a> with natural language.
+          </p>
+          <p className="text-gray-700 text-sm">
+            You can ask it about how to build on Arbitrum, where to get started, and receive guidance from Arbichat.
+          </p>
+        </header>
+        <ChatText />
       </div>
-      <ChatText />
     </div>
   );
 }

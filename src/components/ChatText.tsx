@@ -45,22 +45,22 @@ const ChatText = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col space-y-4">
+    <div className="chat-text-container">
+      <div className="quick-actions">
         {quickActions.map((action, index) => (
           <button
             key={index}
             onClick={() => handleQuickAction(action)}
-            className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-md text-gray-800 hover:bg-gray-200 hover:shadow-md transition"
+            className="quick-action-button"
           >
             {action}
           </button>
         ))}
       </div>
 
-      <div className="flex items-center w-full gap-4">
+      <div className="input-section">
         <textarea
-          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+          className="input-textarea"
           placeholder="Type your question here..."
           value={query}
           onChange={handleInputChange}
@@ -68,27 +68,23 @@ const ChatText = () => {
         />
         <div
           onClick={handleSubmit}
-          className={`flex items-center justify-center p-3 text-white bg-blue-500 hover:bg-blue-600 rounded-full cursor-pointer ${
-            thinking ? "bg-gray-400 cursor-not-allowed" : ""
-          }`}
+          className={`submit-button ${thinking ? "disabled" : ""}`}
         >
-          <FiSend className="w-5 h-5" />
+          <FiSend />
         </div>
       </div>
 
       {thinking && (
-        <div className="flex items-center justify-center text-gray-600 gap-2">
-          <AiOutlineLoading3Quarters className="animate-spin w-5 h-5" />
+        <div className="loading">
+          <AiOutlineLoading3Quarters className="spinner" />
           <span>Loading...</span>
         </div>
       )}
 
       {response && (
-        <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">
-            Response:
-          </h2>
-          <p className="text-sm text-gray-700">{response}</p>
+        <div className="response-container">
+          <h2 className="response-title">Response:</h2>
+          <p className="response-text">{response}</p>
         </div>
       )}
     </div>

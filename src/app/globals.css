@@ -5,43 +5,181 @@ body {
   height: 100%;
   font-family: Arial, sans-serif;
   background-color: #f7f8fa;
-  color: black;
+  color: #111827;
+}
+
+.home-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  background-color: #f7f8fa;
 }
 
-textarea {
-  resize: none;
-  outline: none;
+.chat-box {
+  max-width: 600px;
+  width: 100%;
+  padding: 24px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-button {
+.chat-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.chat-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #111827;
+}
+
+.chat-description {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.link {
+  color: #3b82f6;
+  text-decoration: underline;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
-button:disabled {
+.chat-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quick-action-button {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background-color: #f7f8fa;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-action-button:hover {
+  background-color: #e5e7eb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-section {
+  display: flex;
+  align-items: center; /* Vertically centers the elements */
+  gap: 8px; /* Space between the text box and button */
+}
+
+.input-textarea {
+  flex-grow: 1; /* Makes the textarea take up the remaining space */
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: none;
+  height: 48px; /* Match the button height */
+  line-height: 24px; /* Vertically align text */
+}
+
+.submit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px; /* Ensure it matches the height for alignment */
+  height: 48px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #2563eb;
+}
+
+.submit-button.disabled {
+  background-color: #9ca3af;
   cursor: not-allowed;
 }
+.response-container {
+  background-color: #f7f8fa;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-.flex {
+.response-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.response-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #374151;
+  white-space: pre-wrap;
+}
+
+.loading {
   display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
 }
 
-.grid {
-  display: grid;
-}
-
-.animate-spin {
+.spinner {
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% {
+  from {
     transform: rotate(0deg);
   }
-  100% {
+  to {
     transform: rotate(360deg);
   }
+}
+.textarea {
+  display: flex;
+  min-height: 60px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #111827;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  resize: none;
+}
+
+.textarea::placeholder {
+  color: #9ca3af;
+}
+
+.textarea:focus-visible {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px #bfdbfe;
+}
+
+.textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }

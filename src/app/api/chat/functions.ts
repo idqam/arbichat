@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { kv } from "@vercel/kv";
 
+const ALLOWED_TOPICS = [
+  "Arbitrum",
+  "Ethereum",
+  "blockchain",
+  "Layer 2",
+  "scaling solutions",
+];
+
 type FunctionNames = "retrieve_from_kv" | "search_knowledge_base";
 
 export const functions: {
@@ -59,6 +67,12 @@ async function handleRetrieveFromKV({ key }: { key: string }) {
   if (!value) throw new Error(`No data found for key: ${key}`);
 
   return { key, value };
+}
+
+export function isQueryRelevant(query: string): boolean {
+  return ALLOWED_TOPICS.some((topic) =>
+    query.toLowerCase().includes(topic.toLowerCase())
+  );
 }
 
 async function handleSearchKnowledgeBase({ query }: { query: string }) {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { kv } from "@vercel/kv";
 import { Configuration, OpenAIApi } from "openai-edge";
-import { functions, handleFunction } from "./functions";
+import { functions, handleFunction, isQueryRelevant } from "./functions";
 import { SYSTEM_MESSAGE1 } from "@/utils/constants";
 import { Ratelimit } from "@upstash/ratelimit";
 export const runtime = "edge";
@@ -65,6 +65,19 @@ export async function POST(req: Request) {
       return new Response("No user query found in the messages", {
         status: 400,
       });
+    }
+
+    if (!isQueryRelevant(userQuery)) {
+      return new Response(
+        JSON.stringify({
+          response:
+            "This chatbot only answers questions about Arbitrum and related topics.",
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     messages.unshift(SYSTEM_MESSAGE);

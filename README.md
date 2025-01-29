@@ -1,4 +1,4 @@
-# 📚 Arbitrum Documentation Chatbot using Vercel AI SDK
+# 📚 Arbitrum Documentation Chatbot
 
 This repository contains a **documentation chatbot** built using the **Vercel AI SDK** to help users retrieve information from **Arbitrum Docs**. It utilizes **OpenAI API** for natural language understanding and a **KV store** for efficient knowledge retrieval.
 

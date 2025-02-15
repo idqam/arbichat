@@ -1,0 +1,9 @@
+{
+  "document": "_ArbosTest",
+  "chunks": [
+    {
+      "id": "_ArbosTest.mdx_chunk_0",
+      "content": "<table>\n  <thead>\n    <tr>\n      <th>Method</th>\n      <th>Solidity interface</th>\n      <th>Go implementation</th>\n      <th>Description</th>\n    </tr>\n  </thead>\n\n  <tbody>\n    <tr>\n      <td>\n        <code>burnArbGas(uint256 gasAmount)</code>\n      </td>\n\n      <td>\n        <a href=\"https://github.com/OffchainLabs/nitro-contracts/blob/763bd77906b7677da691eaa31c6e195d455197a4/src/precompiles/ArbosTest.sol#L13\" target=\"_blank\">\n          Interface\n        </a>\n      </td>\n\n      <td>\n        <a href=\"https://github.com/OffchainLabs/nitro/blob/v3.4.0/precompiles/ArbosTest.go#L16\" target=\"_blank\">\n          Implementation\n        </a>\n      </td>\n\n      <td>BurnArbGas unproductively burns the amount of L2 ArbGas</td>\n    </tr>\n  </tbody>\n</table>"
+    }
+  ]
+}

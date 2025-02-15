@@ -1,0 +1,13 @@
+{
+  "document": "parsiq",
+  "chunks": [
+    {
+      "id": "parsiq.mdx_chunk_0",
+      "content": "***\n\ntitle: 'Quickstart: PARSIQ (blockchain data API & SDK)'\ndescription: 'Learn how to use PARSIQ API and SDK to get Arbitrum data'\nauthor: Ivan-Ivanitskiy\nsme: Ivan-Ivanitskiy\nsidebar\\_label: 'PARSIQ'\n------------------------\n\n**[<ins>PARSIQ</ins>](https://www.parsiq.net/)** is a reliable, fully customizable blockchain data indexer, helping developers to seamlessly access, process and utilize Web3 data - both raw and custom. PARSIQ API allows querying blockchain data such as transactions, token transfers, events, internal function calls, blocks, etc. PARSIQ SDK allows accumulating, processing, and storing this data according to the developer-specified logic, as well as building your own API endpoints. Check out **[<ins>this introduction video</ins>](https://www.youtube.com/watch?v=kQJYJGt62hc)**\nto get started. ## PARSIQ Tsunami API\n\nPARSIQ Tsunami API is a highly efficient API to fetch raw Web3 data:\n\n* Events, calls, transactions (internal included), transfers, contracts, blocks - you name it. Possibility to use unlimited blockrange makes Tsunami a hard-to-beat solution for reliably getting large amounts of data from the blockchain. CSV Export is available."
+    },
+    {
+      "id": "parsiq.mdx_chunk_1",
+      "content": "* Get decoded, human readable data right out of the box. * Need an up to date feeds of data streamed to you in real time? Give our low latency Real Time Streaming service a try. :::info Endpoints\n\nPlease check out our [<ins>PARSIQ API Reference</ins>](https://docs.parsiq.net/reference/introduction) to see all the available endpoints. :::\n\n## PARSIQ SDK\n\nSome more complicated cases where custom data needs to be stored, accumulated, and calculated, cannot be covered by an API. In that cases, use PARSIQ SDK or go for a Custom Data Lake. They allow you to set up data bases and data processing logic to solve your specific use case. :::info SDK Documentation\n\nPlease see [<ins>PARSIQ SDK documentation</ins>](https://docs.parsiq.net/reference/your-own-web3-api) for more details. :::"
+    }
+  ]
+}

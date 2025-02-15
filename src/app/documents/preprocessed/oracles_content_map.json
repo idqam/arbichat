@@ -1,0 +1,13 @@
+{
+  "document": "oracles_content_map",
+  "chunks": [
+    {
+      "id": "oracles_content_map.mdx_chunk_0",
+      "content": "***\n\nid: oracles-content-map\ntitle: Oracles providers\nsidebar\\_label: Oracles overview\n--------------------------------\n\nimport Card from '@site/src/components/Cards/Card';\n\nLearn how to run an Arbitrum node."
+    },
+    {
+      "id": "oracles_content_map.mdx_chunk_1",
+      "content": "<div\n  style={{\n  display: 'grid',\n  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',\n  gap: '20px',\n}}\n>\n  <Card title=\"API3\" description=\"Learn out to use API3\" href=\"/for-devs/oracles/api3/\" target=\"_blank\" />\n\n  <Card title=\"Chainlink\" description=\"Learn out to use Chainlink\" href=\"/for-devs/oracles/chainlink/\" target=\"_blank\" />\n\n  <Card title=\"Chronicle\" description=\"Learn out to use Chronicle\" href=\"/for-devs/oracles/chronicle/\" target=\"_blank\" />\n\n  <Card title=\"Ora\" description=\"Learn out to use Ora\" href=\"/for-devs/oracles/ora/\" target=\"_blank\" />\n\n  <Card title=\"Pyth\" description=\"Learn out to use Pyth\" href=\"/for-devs/oracles/pyth/\" target=\"_blank\" />\n\n  <Card title=\"Supra price feed\" description=\"Querying price feeds with Supra\" href=\"/for-devs/oracles/supra/use-supras-price-feed-oracle\" target=\"_blank\" />\n\n  <Card title=\"Supra VRF\" description=\"Using Supra VRF\" href=\"/for-devs/oracles/supra/use-supras-vrf\" target=\"_blank\" />\n\n  <Card title=\"Trellor\" description=\"Learn out to use Trellor\" href=\"/for-devs/oracles/trellor/\" target=\"_blank\" />\n\n  <Card title=\"DIA\" description=\"Learn out to use DIA\" href=\"/for-devs/oracles/dia/\" target=\"_blank\" />\n</div>"
+    }
+  ]
+}

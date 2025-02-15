@@ -1,0 +1,21 @@
+{
+  "document": "crossmint",
+  "chunks": [
+    {
+      "id": "crossmint.mdx_chunk_0",
+      "content": "***\n\ntitle: 'How to deploy an NFT smart contract and enable credit card and cross-chain payments with no-code'\ndescription: 'Learn how to use Crossmint to create and deploy NFT contracts and enable credit card and cross-chain payments for your customers and users.'\nauthor: Rohit Ramesh\nsme: rohit-710\nsidebar\\_label: 'Crossmint'\n---------------------------\n\n:::info Community member contribution\n\nShoutout to [@rohit-710](https://github.com/rohit-710) for contributing the following [third-party document](/for-devs/third-party-docs/contribute)! :::\n\n**[<ins>Crossmint</ins>](http://crossmint.com/?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)** is an enterprise-grade web3 development platform that lets you deploy smart contracts, create email wallets, enable credit-card and cross chain payments, and use APIs to create, distribute, sell, store, and edit NFTs. By abstracting away the core complexities of the Blockchain, Crossmint allows you to build NFT applications without requiring any blockchain experience or holding cryptocurrency, and making the blockchain invisible to end users. Crossmint enables you to provide a Web2 experience for for your Web3 apps."
+    },
+    {
+      "id": "crossmint.mdx_chunk_1",
+      "content": "Check out **[<ins>Crossmint's Docs</ins>](https://docs.crossmint.com/?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)** to get started. ## Crossmint Console\n\nWhat you can achieve using Crossmint Console:\n\n* Create and deploy NFT Collections. * Create and airdrop NFTs. * Generate No-code Storefront and No-code claims page. * Accept credit card and cross-chain payments for your NFT Collections. * Create and configure API Keys for Wallets and Minting. * Create Webhooks to listen to your Crossmint collections's endpoint URL's triggered events. * Whitelist domains and set up Redirect URls for your NFT Collections' checkout. :::info Crossmint Console\n\nPlease check out the [<ins>docs</ins>](https://docs.crossmint.com/docs/create-developer-account) to learn more. Click [<ins>here</ins>](https://www.crossmint.com/console/overview?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum) to use Crossmint's Production Console and click [<ins>here</ins>](https://staging.crossmint.com/console/overview?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum) to use Crossmint's Staging Console."
+    },
+    {
+      "id": "crossmint.mdx_chunk_2",
+      "content": ":::\n\n## How to deploy an NFT smart contract on Arbitrum and enable credit card and cross-chain payments with no-code\n\nPlease checkout the step-by-step tutorial on the docs [<ins>here</ins>](https://docs.crossmint.com/docs/create-an-nft-collection?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum) and [<ins>here</ins>](https://docs.crossmint.com/docs/storefronts). :::info Video Tutorial\n\nYou can find a YouTube video for the same [<ins>here</ins>](https://youtu.be/pq2TVCkfBDI). :::\n\n## Connect with Crossmint! Need further help? We got you!"
+    },
+    {
+      "id": "crossmint.mdx_chunk_3",
+      "content": "Check out all the ways you can reach Crossmint for further questions and support:\n\n* Visit Crossmint's official website at [crossmint.com](http://crossmint.com/?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)\n* Read developer [Docs](https://docs.crossmint.com/?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)\n* For assistance, contact the Crossmint team via the [Support forum](https://help.crossmint.com/hc/en-us?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)\n* Follow Crossmint on [Twitter](https://twitter.com/crossmint?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)\n* Join the official [Discord server](https://discord.gg/crossmint?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)\n* Check out Crossmint on [Youtube](https://www.youtube.com/@crossmint?utm_source=backlinks\\&utm_medium=docs\\&utm_campaign=arbitrum)"
+    }
+  ]
+}

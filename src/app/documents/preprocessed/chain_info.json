@@ -1,0 +1,9 @@
+{
+  "document": "chain_info",
+  "chunks": [
+    {
+      "id": "chain_info.mdx_chunk_0",
+      "content": "***\n\ntitle: 'Arbitrum chain information'\nsidebar\\_label: 'Chain info'\ndescription: 'Chains information Arbitrum'\nauthor: anegg0\nsme: anegg0\nuser\\_story: As a current or prospective Arbitrum developer, I need to find endpoints and contract addresses about the Arbitrum chains so that I can interact with them. content\\_type: reference\n------------------------\n\nimport ArbitrumRpcEndpoints from '../../partials/_reference-arbitrum-rpc-endpoints-partial.mdx';\n\nimport ThirdPartyRpcEndpoints from '../../partials/_reference-third-party-rpc-endpoints-partial.mdx';\n\nimport ArbitrumContractAddresses from '../../partials/_reference-arbitrum-contract-addresses-partial.mdx';\n\n<ArbitrumRpcEndpoints />\n\n<ThirdPartyRpcEndpoints />\n\n## Arbitrum Smart Contract Addresses\n\n<ArbitrumContractAddresses />"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "document": "_ArbStatistics",
+  "chunks": [
+    {
+      "id": "_ArbStatistics.mdx_chunk_0",
+      "content": "<table>\n  <thead>\n    <tr>\n      <th>Method</th>\n      <th>Solidity interface</th>\n      <th>Go implementation</th>\n      <th>Description</th>\n    </tr>\n  </thead>\n\n  <tbody>\n    <tr>\n      <td>\n        <code>getStats()</code>\n      </td>\n\n      <td>\n        <a href=\"https://github.com/OffchainLabs/nitro-contracts/blob/763bd77906b7677da691eaa31c6e195d455197a4/src/precompiles/ArbStatistics.sol#L18\" target=\"_blank\">\n          Interface\n        </a>\n      </td>\n\n      <td>\n        <a href=\"https://github.com/OffchainLabs/nitro/blob/v3.4.0/precompiles/ArbStatistics.go#L18\" target=\"_blank\">\n          Implementation\n        </a>\n      </td>\n\n      <td>\n        GetStats returns the current block number and some statistics about the rollup's pre-Nitro\n        state\n      </td>\n    </tr>\n  </tbody>\n</table>"
+    }
+  ]
+}

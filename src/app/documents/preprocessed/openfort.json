@@ -1,0 +1,29 @@
+{
+  "document": "openfort",
+  "chunks": [
+    {
+      "id": "openfort.mdx_chunk_0",
+      "content": "***\n\ntitle: 'How to onboard users in your game and make a gasless transaction'\ndescription: 'Learn how to use Openfort to integrate authentication, private key management, and account abstraction into your game on Arbitrum'\nauthor: Joan Alavedra\nsme: joalavedra\nsidebar\\_label: 'Openfort'\n--------------------------\n\n:::info Community member contribution\n\nThe following document was contributed by [@joalavedra](https://github.com/joalavedra). Give them a shoutout if you find it useful! :::\n\n**[<ins>Openfort</ins>](https://www.openfort.xyz/)** is a headless wallet solution that helps developers integrate authentication, private key management, and account abstraction into their dApps. By abstracting away the complexities of blockchain interactions, Openfort allows you to build Web3 applications with a Web2-like user experience without requiring end users to manage private keys or hold cryptocurrency. Openfort enables you to:\n\n* Implement secure authentication and key management\n* Create and manage smart contract wallets\n* Enable gasless and sponsored transactions\n\nCheck out **[<ins>Openfort's Documentation</ins>](https://www.openfort.xyz/docs)** to get started."
+    },
+    {
+      "id": "openfort.mdx_chunk_1",
+      "content": "## Openfort dashboard\n\nThe Openfort dashboard allows you to:\n\n* Create and manage projects\n* Generate API keys\n* Configure authentication providers\n* Monitor transactions and analytics\n* Set up webhooks for real-time notifications\n\n:::info Openfort Dashboard\n\nPlease check out the [<ins>docs</ins>](https://www.openfort.xyz/docs/) to learn more about using the Openfort Dashboard. Click [<ins>here</ins>](https://dashboard.openfort.xyz) to access the Openfort Dashboard. :::\n\n## How to implement a gasless transaction on Arbitrum using Openfort\n\nWith Openfort, you can sponsor transactions for your users, meaning that in-game wallets don't need native tokens to execute transactions, such as minting an NFT. This guide will walk you through the process of implementing a gasless transaction to mint an NFT on Arbitrum. ### 1. Import the NFT Contract\n\nFirst, you need to import the smart contract you'll be interacting with. In this case, we'll use an NFT contract with a 'mint' function."
+    },
+    {
+      "id": "openfort.mdx_chunk_2",
+      "content": "```bash\ncurl https://api.openfort.xyz/v1/contracts \\\n  -u \"$YOUR_SECRET_KEY:\" \\\n  -d 'name=NFT Contract' \\\n  -d 'chainId=42161' \\\n  -d 'address=YOUR_CONTRACT_ADDRESS'\n```\n\nReplace `YOUR_CONTRACT_ADDRESS` with the address of your NFT contract on Arbitrum. ### 2. Set up the Gas Policy\n\nCreate a new policy to sponsor gas fees for users:\n\n```shell\ncurl https://api.openfort.xyz/v1/policies \\\n  -H \"Authorization: Bearer $YOUR_SECRET_KEY\" \\\n  -d chainId=42161 \\\n  -d name=\"Arbitrum NFT Sponsor\" \\\n  -d \"strategy[sponsorSchema]=pay_for_user\"\n```\n\nThen, add a policy rule for the NFT contract:\n\n```shell\ncurl https://api.openfort.xyz/v1/policies/:id/policy_rules \\\n  -H \"Authorization: Bearer $YOUR_SECRET_KEY\" \\\n  -d type=\"contract_functions\" \\\n  -d functionName=\"mint\" \\\n  -d contract=\"con_...\"\n```\n\nReplace `:id` with the policy ID returned from the previous step, and `con_...` with your contract ID. ### 3."
+    },
+    {
+      "id": "openfort.mdx_chunk_3",
+      "content": "Create a gasless transaction\n\nNow, let's create a transaction to mint an NFT without the user paying for gas:\n\n```javascript\nconst Openfort = require('@openfort/openfort-node').default;\nconst openfort = new Openfort(YOUR_SECRET_KEY);\n\nconst policyId = 'pol_...'; // Your policy ID from step 2\n\nconst transactionIntent = await openfort.transactionIntents.create({\n  chainId: 42161, // Arbitrum One\n  policy: policyId,\n  optimistic: true,\n  interactions: {\n    contract: 'con_....', // Your NFT contract ID\n    functionName: 'mint',\n    functionArgs: ['0x...'], // Address to receive the NFT\n  },\n});\n```\n\n### 4."
+    },
+    {
+      "id": "openfort.mdx_chunk_4",
+      "content": "Optional: specify the player\n\nIf you want to associate the transaction with a specific player:\n\n```javascript\nconst Openfort = require('@openfort/openfort-node').default;\nconst openfort = new Openfort(YOUR_SECRET_KEY);\n\nconst playerId = 'pla_...'; // Your player ID\nconst policyId = 'pol_...'; // Your policy ID from step 2\n\nconst transactionIntent = await openfort.transactionIntents.create({\n  player: playerId,\n  chainId: 42161, // Arbitrum One\n  policy: policyId,\n  optimistic: true,\n  interactions: {\n    contract: 'con_....', // Your NFT contract ID\n    functionName: 'mint',\n    functionArgs: [playerId], // Minting to the player's address\n  },\n});\n```\n\nBy following these steps, you've created a gasless transaction on Arbitrum using Openfort. The user can now mint an NFT without needing to hold ETH for gas fees. Remember to handle the response from the `transactionIntents.create` call in your application to provide feedback to the user about the minting process. :::info Detailed tutorial\n\nFor a more detailed tutorial, please refer to the [<ins>Openfort Quick Start Guide</ins>](https://www.openfort.xyz/docs/guides/getting-started)."
+    },
+    {
+      "id": "openfort.mdx_chunk_5",
+      "content": ":::\n\n## Connect with Openfort\n\nNeed further assistance? Reach out to Openfort for support and stay updated:\n\n* Visit Openfort's official website at [openfort.xyz](https://www.openfort.xyz)\n* Read the [Documentation](https://www.openfort.xyz/docs)\n* For support, contact the Openfort team via [Discord](https://discord.gg/t7x7hwkJF4)\n* Follow Openfort on [Twitter](https://twitter.com/openfortxyz)\n* Check out Openfort on [GitHub](https://github.com/openfort-xyz)"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "document": "pyth",
+  "chunks": [
+    {
+      "id": "pyth.mdx_chunk_0",
+      "content": "***\n\nid: 'pyth'\ntitle: 'Pyth'\ndescription: 'Learn how to use Pyth Oracle'\nauthor: pete-vielhaber\nsme: pete-vielhaber\nsidebar\\_label: 'pyth'\ncontent\\_type: how-to\n---------------------\n\nThe [Pyth network](https://pyth.network/) a first-party oracle network, securely and transparently delivering real-time market data to [multiple chains](https://docs.pyth.network/price-feeds/contract-addresses). The network comprises some of the world’s [largest exchanges, market makers, and financial services providers](https://pyth.network/publishers). These publish proprietary data on-chain for aggregation and distribution to smart contract applications. ## Pyth price feeds\n\nThe Pyth network introduces an innovative low-latency [pull oracle design](https://docs.pyth.network/price-feeds/pull-updates), where users can pull price updates on-chain when needed, enabling everyone in the blockchain environment to access that data point. Pyth network updates the prices every 400ms, making Pyth the fastest on-chain oracle. Here is a working example of a contract that fetches the latest price of ARB/USD on the Arbitrum network."
+    },
+    {
+      "id": "pyth.mdx_chunk_1",
+      "content": "You have to pass Pyth's contract address for Arbitrum mainnet/testnet and the desired price feed ID to fetch the latest price. Install the Pyth SDK Solidity package in your project:\n\n```tsx\nnpm install @pythnetwork/pyth-sdk-solidity\n```\n\nAnd then, in a few lines of code you can fetch the latest price on the Arbitrum network. ```solidity\n// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.13;\nimport \"@pythnetwork/pyth-sdk-solidity/IPyth.sol\";\nimport \"@pythnetwork/pyth-sdk-solidity/PythStructs.sol\";\ncontract MyFirstPythContract {\n    IPyth pyth;\n    // Pass the address of Pyth's contract for Arbitrum mainnet(0xff1a0f4744e8582DF1aE09D5611b887B6a12925C)\n    constructor(address _pyth) {\n        pyth = IPyth(_pyth);\n    }\n    function fetchPrice(\n        bytes[] calldata updateData,\n        bytes32 priceFeed\n    ) public payable returns (int64) {\n   // Fetch the priceUpdate from hermes."
+    },
+    {
+      "id": "pyth.mdx_chunk_2",
+      "content": "uint updateFee = pyth.getUpdateFee(updateData);\n        pyth.updatePriceFeeds{value: updateFee}(updateData);\n        // Fetch the latest price\n        PythStructs.Price memory price = pyth.getPrice(priceFeed);\n        return price.price;\n    }\n}\n```\n\nHere you can fetch the `updateData` from Pyth's [Hermes](https://hermes.pyth.network/docs/) feed, which listens to Pythnet and Wormhole for price updates; or you can use the [pyth-evm-js](https://github.com/pyth-network/pyth-crosschain/blob/main/target_chains/ethereum/sdk/js/src/EvmPriceServiceConnection.ts#L15) SDK. Check [How to Fetch Price Updates](https://docs.pyth.network/price-feeds/fetch-price-updates) to pull the latest data. ## Pyth Entropy\n\nPyth Entropy allows developers to quickly and easily generate secure **random numbers** on the blockchain. Check [how to generate random numbers in EVM contracts](https://docs.pyth.network/entropy/generate-random-numbers/evm) for a detailed walkthrough."
+    },
+    {
+      "id": "pyth.mdx_chunk_3",
+      "content": "### Supported networks for Arbitrum(Pyth Entropy):\n\n* Arbitrum: [`0x7698E925FfC29655576D0b361D75Af579e20AdAc`](https://arbiscan.io/address/0x7698E925FfC29655576D0b361D75Af579e20AdAc)\n* Arbitrum Sepolia: [`0x549Ebba8036Ab746611B4fFA1423eb0A4Df61440`](https://sepolia.arbiscan.io/address/0x549Ebba8036Ab746611B4fFA1423eb0A4Df61440)\n\n## Additional resources\n\nCheck out the following links to get started with Pyth:\n\n* [Pyth EVM Integration Guide](https://docs.pyth.network/price-feeds/use-real-time-data/evm)\n* [Pyth Docs](https://docs.pyth.network/home)\n* [Pyth API Reference](https://api-reference.pyth.network/price-feeds/evm/getPrice)\n* [Pyth Examples](https://github.com/pyth-network/pyth-examples)\n* [Pyth Price Feed Ids](https://pyth.network/developers/price-feed-ids)"
+    }
+  ]
+}

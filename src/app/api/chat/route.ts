@@ -98,7 +98,7 @@ export async function POST(req: Request) {
       const retrievedChunks = (await handleFunction(
         name,
         JSON.parse(args)
-      )) as { title: string; chunk: string }[];
+      )) as unknown as { title: string; chunk: string }[];
 
       const formattedChunks = Array.isArray(retrievedChunks)
         ? retrievedChunks
